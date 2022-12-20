@@ -1,0 +1,17 @@
+{
+  "name": "music_club_bot",
+  "version": "1.0.0",
+  "description": "A Discord Bot to manage spotify playlists for music clubs",
+  "author": "McMumf",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.7.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.30.0",
+    "nodemon": "^2.0.20"
+  }
+}
