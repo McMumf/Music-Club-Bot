@@ -2,8 +2,6 @@ const { SlashCommandBuilder } = require('discord.js');
 const axios = require('axios');
 const { playlistId, playlistOwnerDiscordId } = require('../config.json');
 
-const spotifyUtils = require('../utils/spotifyUtils');
-
 const playlistUrl = 'https://api.spotify.com/v1/playlists/' + playlistId;
 
 async function removeTracks(playlistResponse, bearer) {
@@ -28,7 +26,10 @@ async function removeTracks(playlistResponse, bearer) {
 		data: trackUris
 	}).catch(err => {
 		console.error(err);
+		return;
 	});
+
+	console.debug('successfully removed tracks');
 }
 
 async function updateDescription(theme, bearer) {
@@ -53,7 +54,7 @@ module.exports = {
 				.setRequired(false)),
 	async execute(interaction) {
 
-		const newToken = 'BQDNCXFQNxYPgRy8G3J-3qE5xBQ1TJ899b_8MXCR1vP69DV6aH7pgMDwl0leKGVrRMiXa_0DP5cIfASYeEOa72RPT-05ugoT23E_PfaS7JbfmydoWRoD6eM2-XR1F6rGwpXKZxtylX9oRGGNvPKz58OLJQNmJI_hvR7PXZCXeIddKmDe8axe_ZsbByyOYokGxyQNRHiZigHKgmeY6hV2oVllEiq-Zb0ihSEVwOrQGWP8'; // await spotifyUtils.getSpotifyAccessToken();
+		const newToken = 'AQCAtt9F_V9IIPK2WUx_3sbgJZPJc63pu-pZQWM7rku9j0rQOvUeozohZYUU7nJUfzAIMGJMl-Gh4IrFlXeivOVgbdSB9Hnqfi2TqJTVaVWR29Q9dnzRQZeUUHeqC08AoLg_VRq9ElCqEfLqRCY4H10fS6VvagNcHsxs6fxczTFtg3hwdYPV826lwA5jbGVl32pTwthhIvSXFlkLmLTiWmkVJtWrcrBTq--GVoECfJFy'; // await spotifyUtils.getSpotifyAccessToken();
 
 		// TODO: Verify user auth (https://developer.spotify.com/documentation/general/guides/authorization/code-flow/)
 		// spotifyUtils.userAuth();
@@ -77,12 +78,12 @@ module.exports = {
 			console.error(err);
 		});
 
-		removeTracks(playlistResponse, bearer);
+		await removeTracks(playlistResponse, bearer);
 
 		const newTheme = interaction.options.getString('theme');
 
 		if (typeof newTheme === 'string' && newTheme.trim().length > 0) {
-			updateDescription(newTheme.trim(), bearer);
+			await updateDescription(newTheme.trim(), bearer);
 		}
 
 		return interaction.reply('Playlist cleared!');

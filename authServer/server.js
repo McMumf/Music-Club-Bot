@@ -51,7 +51,7 @@ app.get('/login', function (req, res) {
 	res.cookie(stateKey, state);
 
 	// your application requests authorization
-	var scope = 'playlist-modify-public';
+	var scope = 'playlist-modify-public playlist-modify-private';
 	res.redirect('https://accounts.spotify.com/authorize?' +
 		querystring.stringify({
 			response_type: 'code',
@@ -132,15 +132,15 @@ app.get('/refresh_token', async function (req, res) {
 
 	var errorSentinel = false;
 
-	const response = await axios.post('https://accounts.spotify.com/api/token', {
+	const requestParams = new URLSearchParams();
+	requestParams.append('grant_type', 'refresh_token');
+	requestParams.append('refresh_token', refresh_token);
+
+	const response = await axios.post('https://accounts.spotify.com/api/token', requestParams, {
 		headers: {
 			'Authorization': 'Basic ' + Buffer.from(spotifyClientId + ':' + spotifyClientSecret).toString('base64'),
 			'Content-Type': 'application/x-www-form-urlencoded'
 		},
-		data: querystring.stringify({
-			grant_type: 'refresh_token',
-			refresh_token: refresh_token
-		}),
 		json: true
 	}).catch(err => {
 		console.error(err);
