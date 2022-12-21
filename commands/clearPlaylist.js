@@ -55,6 +55,9 @@ module.exports = {
 
 		const newToken = await spotifyUtils.getSpotifyAccessToken();
 
+		// TODO: Verify user auth (https://developer.spotify.com/documentation/general/guides/authorization/code-flow/)
+		spotifyUtils.userAuth();
+
 		const bearer = 'Bearer ' + newToken;
 
 		const userId = interaction.user.id;
