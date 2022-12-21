@@ -10,7 +10,7 @@ async function removeTracks(playlistResponse, bearer) {
 	const playlistItems = playlistResponse.data.tracks['items'];
 
 	let trackUris = {
-		'tracks': [],
+		'tracks': []
 	};
 
 	for (let i in playlistItems) {
@@ -23,9 +23,9 @@ async function removeTracks(playlistResponse, bearer) {
 	await axios.delete(playlistUrl + '/tracks', {
 		headers: {
 			Authorization: bearer,
-			'Content-Type': 'application/json',
+			'Content-Type': 'application/json'
 		},
-		data: trackUris,
+		data: trackUris
 	}).catch(err => {
 		console.error(err);
 	});
@@ -35,8 +35,8 @@ async function updateDescription(theme, bearer) {
 	await axios.put(playlistUrl, { 'description': 'Theme: ' + theme.trim() }, {
 		headers: {
 			Authorization: bearer,
-			'Content-Type': 'application/json',
-		},
+			'Content-Type': 'application/json'
+		}
 	}).catch(err => {
 		console.error(err);
 	});
@@ -53,10 +53,10 @@ module.exports = {
 				.setRequired(false)),
 	async execute(interaction) {
 
-		const newToken = await spotifyUtils.getSpotifyAccessToken();
+		const newToken = 'BQDNCXFQNxYPgRy8G3J-3qE5xBQ1TJ899b_8MXCR1vP69DV6aH7pgMDwl0leKGVrRMiXa_0DP5cIfASYeEOa72RPT-05ugoT23E_PfaS7JbfmydoWRoD6eM2-XR1F6rGwpXKZxtylX9oRGGNvPKz58OLJQNmJI_hvR7PXZCXeIddKmDe8axe_ZsbByyOYokGxyQNRHiZigHKgmeY6hV2oVllEiq-Zb0ihSEVwOrQGWP8'; // await spotifyUtils.getSpotifyAccessToken();
 
 		// TODO: Verify user auth (https://developer.spotify.com/documentation/general/guides/authorization/code-flow/)
-		spotifyUtils.userAuth();
+		// spotifyUtils.userAuth();
 
 		const bearer = 'Bearer ' + newToken;
 
@@ -70,21 +70,21 @@ module.exports = {
 
 		const playlistResponse = await axios.get(playlistUrl, {
 			headers: {
-				Authorization: bearer,
+				Authorization: bearer
 			},
-			responseType: 'json',
+			responseType: 'json'
 		}).catch(err => {
 			console.error(err);
 		});
 
-		// removeTracks(playlistResponse, bearer);
+		removeTracks(playlistResponse, bearer);
 
 		const newTheme = interaction.options.getString('theme');
 
 		if (typeof newTheme === 'string' && newTheme.trim().length > 0) {
-			// updateDescription(newTheme.trim(), bearer);
+			updateDescription(newTheme.trim(), bearer);
 		}
 
 		return interaction.reply('Playlist cleared!');
-	},
+	}
 };

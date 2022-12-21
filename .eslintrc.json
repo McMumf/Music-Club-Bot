@@ -24,7 +24,7 @@
         ],
         "comma-dangle": [
             "error",
-            "always-multiline"
+            "never"
         ],
         "comma-spacing": "error",
         "comma-style": "error",
@@ -81,7 +81,6 @@
         "no-trailing-spaces": [
             "error"
         ],
-        "no-var": "error",
         "object-curly-spacing": [
             "error",
             "always"

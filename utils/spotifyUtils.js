@@ -14,8 +14,8 @@ async function getSpotifyAccessToken() {
 	const tokenResponse = await axios.post(tokenUrl, requestParams, {
 		headers: {
 			Authorization: 'Basic ' + Buffer.from(spotifyClientId + ':' + spotifyClientSecret).toString('base64'),
-			'Content-Type': 'application/x-www-form-urlencoded',
-		},
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
 	}).catch(err => {
 		console.error(err);
 	});
@@ -27,6 +27,5 @@ async function getSpotifyAccessToken() {
 }
 
 module.exports = {
-	getSpotifyAccessToken,
-	userAuth,
+	getSpotifyAccessToken
 };
