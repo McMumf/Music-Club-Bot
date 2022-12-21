@@ -15,7 +15,9 @@ const cookieParser = require('cookie-parser');
 
 const { spotifyClientId, spotifyClientSecret } = require('../config.json');
 
-var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+var host = 'http://localhost:8888';
+
+var redirect_uri = host + '/callback'; // Your redirect uri
 
 /**
  * Generates a random string containing numbers and letters
@@ -49,7 +51,7 @@ app.get('/login', function (req, res) {
 	res.cookie(stateKey, state);
 
 	// your application requests authorization
-	var scope = 'playlist-modify-public playlist-modify-private';
+	var scope = 'playlist-modify-public';
 	res.redirect('https://accounts.spotify.com/authorize?' +
 		querystring.stringify({
 			response_type: 'code',
@@ -71,14 +73,13 @@ app.get('/callback', async function (req, res) {
 	var storedState = req.cookies ? req.cookies[stateKey] : null;
 
 	if (state === null || state !== storedState) {
-		if (state === null) console.err('Received a null state');
-		if (state !== storedState) console.err('Received a state that doesn\'t match');
+		if (state === null) console.error('Received a null state');
+		if (state !== storedState) console.error('Received a state that doesn\'t match');
 		res.redirect('/#' +
 			querystring.stringify({
 				error: 'state_mismatch'
 			})
 		);
-		if (state === null) console.err('Received a null state');
 	} else {
 		res.clearCookie(stateKey);
 
@@ -95,7 +96,7 @@ app.get('/callback', async function (req, res) {
 			},
 			json: true
 		}).catch(err => {
-			console.err(err);
+			console.error(err);
 			errorSentinel = true;
 		});
 
@@ -133,15 +134,16 @@ app.get('/refresh_token', async function (req, res) {
 
 	const response = await axios.post('https://accounts.spotify.com/api/token', {
 		headers: {
-			'Authorization': 'Basic ' + Buffer.from(spotifyClientId + ':' + spotifyClientSecret).toString('base64')
+			'Authorization': 'Basic ' + Buffer.from(spotifyClientId + ':' + spotifyClientSecret).toString('base64'),
+			'Content-Type': 'application/x-www-form-urlencoded'
 		},
-		form: {
+		data: querystring.stringify({
 			grant_type: 'refresh_token',
 			refresh_token: refresh_token
-		},
+		}),
 		json: true
 	}).catch(err => {
-		console.err(err);
+		console.error(err);
 		errorSentinel = true;
 	});
 
