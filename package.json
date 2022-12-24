@@ -3,16 +3,20 @@
   "version": "1.0.0",
   "description": "A Discord Bot to manage spotify playlists for music clubs",
   "author": "McMumf",
-  "main": "index.js",
+  "main": "bot/bot.js",
   "scripts": {
-    "start": "node index.js"
+    "bot": "node bot/bot.js",
+    "auth": "node authServer/server.js",
+    "lint": "eslint ."
   },
   "dependencies": {
     "axios": "^1.2.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "discord.js": "^14.7.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "sequelize": "^6.28.0",
+    "sqlite3": "^5.1.4"
   },
   "devDependencies": {
     "eslint": "^8.30.0",

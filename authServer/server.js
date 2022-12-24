@@ -14,6 +14,7 @@ const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
 const { spotifyClientId, spotifyClientSecret } = require('../config.json');
 const accessRepo = require('./accessRepository.js');
+const db = require('./models');
 
 var host = 'http://localhost:8888';
 

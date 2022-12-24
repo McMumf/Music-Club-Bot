@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const axios = require('axios');
-const { playlistId, playlistOwnerDiscordId } = require('../config.json');
+const { playlistId, playlistOwnerDiscordId } = require('../../config.json');
 const spotifyUtils = require('../utils/spotifyUtils');
 
 const playlistUrl = 'https://api.spotify.com/v1/playlists/' + playlistId;
