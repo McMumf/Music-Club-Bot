@@ -5,6 +5,8 @@ const spotifyUtils = require('../utils/spotifyUtils');
 
 const playlistUrl = 'https://api.spotify.com/v1/playlists/' + playlistId;
 
+var reply = 'Playlist cleared!';
+
 async function removeTracks(playlistResponse, bearer) {
 
 	const playlistItems = playlistResponse.data.tracks['items'];
@@ -86,9 +88,11 @@ module.exports = {
 		const newTheme = interaction.options.getString('theme');
 
 		if (typeof newTheme === 'string' && newTheme.trim().length > 0) {
+			console.debug('new theme: ' + newTheme);
 			await updateDescription(newTheme.trim(), bearer);
+			reply += ' The new theme is ' + newTheme + '!';
 		}
 
-		return interaction.reply('Playlist cleared!');
+		return interaction.reply(reply);
 	}
 };

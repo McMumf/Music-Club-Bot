@@ -32,7 +32,7 @@ A Discord bot to help control spotify playlists
     ```
 
 3) Build the docker image: `docker build . -t <your_user>/music-club-bot`
-4) Run the docker image: `docker run -d <your_user>/music-club-bot`
+4) Run the docker image: `docker run -p 8888:8888 -d <your_user>/music-club-bot`
 
 ## Guides
 
