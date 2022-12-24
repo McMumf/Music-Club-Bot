@@ -52,15 +52,15 @@ app.get('/login', function (req, res) {
 
 	// your application requests authorization
 	var scope = 'playlist-modify-public playlist-modify-private';
-	res.redirect('https://accounts.spotify.com/authorize?' +
-		querystring.stringify({
-			response_type: 'code',
-			client_id: spotifyClientId,
-			scope: scope,
-			redirect_uri: redirect_uri,
-			state: state
-		})
-	);
+
+	const requestParams = new URLSearchParams();
+	requestParams.append('response_type', 'code');
+	requestParams.append('client_id', spotifyClientId);
+	requestParams.append('scope', scope);
+	requestParams.append('redirect_uri', redirect_uri);
+	requestParams.append('state', state);
+
+	res.redirect('https://accounts.spotify.com/authorize?' + requestParams);
 });
 
 app.get('/callback', async function (req, res) {
@@ -81,18 +81,20 @@ app.get('/callback', async function (req, res) {
 			})
 		);
 	} else {
+		console.debug('valid state, moving on');
 		res.clearCookie(stateKey);
 
 		let errorSentinel = false;
 
-		const response = await axios.post('https://accounts.spotify.com/api/token', {
+		const requestParams = new URLSearchParams();
+		requestParams.append('code', code);
+		requestParams.append('redirect_uri', redirect_uri);
+		requestParams.append('grant_type', 'authorization_code');
+
+		const response = await axios.post('https://accounts.spotify.com/api/token', requestParams, {
 			headers: {
-				'Authorization': 'Basic ' + Buffer.from(spotifyClientId + ':' + spotifyClientSecret).toString('base64')
-			},
-			form: {
-				code: code,
-				redirect_uri: redirect_uri,
-				grant_type: 'authorization_code'
+				'Authorization': 'Basic ' + Buffer.from(spotifyClientId + ':' + spotifyClientSecret).toString('base64'),
+				'Content-Type': 'application/x-www-form-urlencoded'
 			},
 			json: true
 		}).catch(err => {
@@ -100,7 +102,11 @@ app.get('/callback', async function (req, res) {
 			errorSentinel = true;
 		});
 
-		if (!errorSentinel && response.statusCode === 200) {
+		console.debug('login response: ' + JSON.stringify(response.data));
+
+		if (!errorSentinel && response.data) {
+
+			console.debug('valid response, return redirecting');
 
 			var access_token = response.data.access_token,
 				refresh_token = response.data.refresh_token;
@@ -110,22 +116,20 @@ app.get('/callback', async function (req, res) {
 				json: true
 			});
 
-			// we can also pass the token to the browser to make requests from there
-			res.redirect('/#' +
-				querystring.stringify({
-					access_token: access_token,
-					refresh_token: refresh_token
-				}));
+			res.send({
+				access_token: access_token,
+				refresh_token: refresh_token
+			});
 		} else {
-			res.redirect('/#' +
-				querystring.stringify({
-					error: 'invalid_token'
-				}));
+			console.debug('invalid response');
+			res.send('invalid_request');
 		}
 	}
 });
 
 app.get('/refresh_token', async function (req, res) {
+
+	console.debug('refreshing token');
 
 	// requesting access token from refresh token
 	var refresh_token = req.query.refresh_token;
@@ -147,7 +151,9 @@ app.get('/refresh_token', async function (req, res) {
 		errorSentinel = true;
 	});
 
-	if (!errorSentinel && response.statusCode === 200) {
+	console.log('refresh response: ' + JSON.stringify(response.data));
+
+	if (!errorSentinel && response.data.statusCode) {
 		var access_token = response.data.access_token;
 		res.send({
 			'access_token': access_token
