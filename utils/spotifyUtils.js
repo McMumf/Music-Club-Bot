@@ -1,31 +1,28 @@
 const axios = require('axios');
-const { spotifyClientId, spotifyClientSecret } = require('../config.json');
 
-const tokenUrl = 'https://accounts.spotify.com/api/token';
+const authServerUrl = 'http://localhost:8888';
 
 async function getSpotifyAccessToken() {
 
 	console.debug('trying to get new token');
 
-	const requestParams = new URLSearchParams();
-	requestParams.append('grant_type', 'client_credentials');
-	requestParams.append('scope', 'playlist-modify-public playlist-modify-private');
-
-	const tokenResponse = await axios.post(tokenUrl, requestParams, {
-		headers: {
-			Authorization: 'Basic ' + Buffer.from(spotifyClientId + ':' + spotifyClientSecret).toString('base64'),
-			'Content-Type': 'application/x-www-form-urlencoded'
-		}
-	}).catch(err => {
-		console.error(err);
+	const response = await axios.get(authServerUrl + '/get-token').catch(err => {
+		console.error('Error receiving token: ' + err);
 	});
 
-	console.debug('TOKEN DATA: ' + JSON.stringify(tokenResponse.data));
+	console.debug('sending access token: ' + JSON.stringify(response.data));
 
-	return tokenResponse.data.access_token;
+	return response.data;
+
+}
+
+async function refreshSpotifyAccessToken() {
+
+	console.debug('trying to refresh access toke');
 
 }
 
 module.exports = {
-	getSpotifyAccessToken
+	getSpotifyAccessToken,
+	refreshSpotifyAccessToken
 };

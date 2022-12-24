@@ -1,10 +1,12 @@
 const { SlashCommandBuilder } = require('discord.js');
 const axios = require('axios');
 const { playlistId, playlistOwnerDiscordId } = require('../config.json');
+const spotifyUtils = require('../utils/spotifyUtils');
 
 const playlistUrl = 'https://api.spotify.com/v1/playlists/' + playlistId;
 
 async function removeTracks(playlistResponse, bearer) {
+
 	const playlistItems = playlistResponse.data.tracks['items'];
 
 	let trackUris = {
@@ -54,12 +56,13 @@ module.exports = {
 				.setRequired(false)),
 	async execute(interaction) {
 
-		const newToken = 'AQCAtt9F_V9IIPK2WUx_3sbgJZPJc63pu-pZQWM7rku9j0rQOvUeozohZYUU7nJUfzAIMGJMl-Gh4IrFlXeivOVgbdSB9Hnqfi2TqJTVaVWR29Q9dnzRQZeUUHeqC08AoLg_VRq9ElCqEfLqRCY4H10fS6VvagNcHsxs6fxczTFtg3hwdYPV826lwA5jbGVl32pTwthhIvSXFlkLmLTiWmkVJtWrcrBTq--GVoECfJFy'; // await spotifyUtils.getSpotifyAccessToken();
+		const token = await spotifyUtils.getSpotifyAccessToken();
 
-		// TODO: Verify user auth (https://developer.spotify.com/documentation/general/guides/authorization/code-flow/)
-		// spotifyUtils.userAuth();
+		if (token.accessToken === 'reauthenticate') {
+			return interaction.reply('Token expired! Please reauthenticate or refresh the tokens.');
+		}
 
-		const bearer = 'Bearer ' + newToken;
+		const bearer = 'Bearer ' + token.accessToken;
 
 		const userId = interaction.user.id;
 

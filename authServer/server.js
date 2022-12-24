@@ -12,8 +12,8 @@ const axios = require('axios');
 const cors = require('cors');
 const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
-
 const { spotifyClientId, spotifyClientSecret } = require('../config.json');
+const accessRepo = require('./accessRepository.js');
 
 var host = 'http://localhost:8888';
 
@@ -43,9 +43,20 @@ app.use(express.static(__dirname + '/public'))
 	.use(cors())
 	.use(cookieParser());
 
+app.get('/get-token', function (req, res) {
+	if (accessRepo.isAuthenticated() == true) {
+		console.debug('user already authenticated, sending stored tokens');
+		res.send({
+			accessToken: accessRepo.getAccessToken()
+		});
+	} else {
+		res.send('reauthenticate');
+	}
+});
+
 app.get('/login', function (req, res) {
 
-	console.debug('user requesting login');
+	console.debug('Logging user in');
 
 	var state = generateRandomString(16);
 	res.cookie(stateKey, state);
@@ -102,7 +113,7 @@ app.get('/callback', async function (req, res) {
 			errorSentinel = true;
 		});
 
-		console.debug('login response: ' + JSON.stringify(response.data));
+		console.debug('login response: ' + response);
 
 		if (!errorSentinel && response.data) {
 
@@ -116,10 +127,16 @@ app.get('/callback', async function (req, res) {
 				json: true
 			});
 
-			res.send({
-				access_token: access_token,
-				refresh_token: refresh_token
-			});
+			console.debug('storing access and refresh tokens');
+			accessRepo.setAccessToken(access_token);
+			accessRepo.setRefreshToken(refresh_token);
+			res.redirect('/#' +
+				querystring.stringify({
+					access_token: access_token,
+					refresh_token: refresh_token
+				})
+			);
+
 		} else {
 			console.debug('invalid response');
 			res.send('invalid_request');
@@ -155,6 +172,7 @@ app.get('/refresh_token', async function (req, res) {
 
 	if (!errorSentinel && response.data.statusCode) {
 		var access_token = response.data.access_token;
+		accessRepo.setAccessToken(access_token);
 		res.send({
 			'access_token': access_token
 		});
