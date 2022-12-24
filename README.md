@@ -4,24 +4,25 @@ A Discord bot to help control spotify playlists
 
 ## Prequisites
 
+- Discord Tokens
+  - Bot Token
+  - Client Token
+  - Guild Token
+  - User ID
+- Spotify Tokens
+  - Client ID
+  - Client Secret
+  - Playlist ID
+
 ## Building and Deploying
 
-1) Get Discord Tokens
-   - Bot Token
-   - Client Token
-   - Guild Token
-   - User ID
-2) Get Spotify Tokens
-   - Client ID
-   - Client Secret
-   - Playlist ID
-3) Create `config.json`
-4) Enter information
+1) Create `config.json`
+2) Enter information
 
    ```json
    {
       "clientId": "<DISCORD CLIENT ID>",
-      "guildId": "<DISCORD GUILD TOKEN>",
+      "guildId": "<DISCORD GUILD ID>",
       "token": "<DISCORD BOT TOKEN>",
       "spotifyClientId": "<SPOTIFY APP CLIENT ID>",
       "spotifyClientSecret": "<SPOTIFY APP CLIENT SECRET>",
@@ -30,5 +31,10 @@ A Discord bot to help control spotify playlists
    }
    ```
 
-5) Build the docker image: `docker build . -t <your_user>/music-club-bot`
-6) Run the image: `docker run -d <your_user>/music-club-bot`
+3) Build the docker image: `docker build . -t <your_user>/music-club-bot`
+4) Run the docker image: `docker run -d <your_user>/music-club-bot`
+
+## Guides
+
+- [Retrieving Discord Tokens](#)
+- [Retrieving Spotify Tokens](#)
