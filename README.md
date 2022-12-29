@@ -14,6 +14,8 @@ A Discord bot to help control spotify playlists
   - Client Secret
   - Playlist ID
 
+_Note: You can follow the guides in our [wiki](https://github.com/McMumf/Music-Club-Bot/wiki) to get the above tokens_
+
 ## Building and Deploying
 
 1) Create `config.json`
@@ -36,5 +38,5 @@ A Discord bot to help control spotify playlists
 
 ## Guides
 
-- [Retrieving Discord Tokens](#)
-- [Retrieving Spotify Tokens](#)
+- [Retrieving Discord Tokens](https://github.com/McMumf/Music-Club-Bot/wiki/Setting-up-the-Discord-App)
+- [Retrieving Spotify Tokens](https://github.com/McMumf/Music-Club-Bot/wiki/Setting-up-the-Spotify-App)
