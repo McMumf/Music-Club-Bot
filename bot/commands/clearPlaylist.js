@@ -3,20 +3,22 @@ const axios = require('axios');
 const { playlistId, playlistOwnerDiscordId } = require('../../config.json');
 const spotifyUtils = require('../utils/spotifyUtils');
 
-const playlistUrl = 'https://api.spotify.com/v1/playlists/' + playlistId + '/tracks';
+const playlistUrl = 'https://api.spotify.com/v1/playlists/' + playlistId;
 
 var reply = 'Playlist cleared!';
 
 async function removeTracks(playlistResponse, bearer) {
 
-	const playlistItems = playlistResponse.data.tracks['items'];
+	const playlistItems = playlistResponse.data.tracks.items;
+
+	console.debug('Playlist Items:\n' + JSON.stringify(playlistItems));
 
 	let trackUris = {
 		'tracks': []
 	};
 
 	for (let i in playlistItems) {
-		console.debug('Looking at ' + JSON.stringify(playlistItems[i].track));
+		console.debug('Looking at ' + JSON.stringify(playlistItems[i].track.uri));
 		trackUris['tracks'].push({ 'uri': playlistItems[i].track.uri });
 	}
 
@@ -84,6 +86,7 @@ module.exports = {
 		});
 
 		console.debug('Playlist Response:\n' + JSON.stringify(playlistResponse.data));
+		console.debug('\n\n');
 
 		await removeTracks(playlistResponse, bearer);
 
