@@ -3,7 +3,7 @@ const axios = require('axios');
 const { playlistId, playlistOwnerDiscordId } = require('../../config.json');
 const spotifyUtils = require('../utils/spotifyUtils');
 
-const playlistUrl = 'https://api.spotify.com/v1/playlists/' + playlistId;
+const playlistUrl = 'https://api.spotify.com/v1/playlists/' + playlistId + '/tracks';
 
 var reply = 'Playlist cleared!';
 
@@ -82,6 +82,8 @@ module.exports = {
 		}).catch(err => {
 			console.error(err);
 		});
+
+		console.debug('Playlist Response:\n' + JSON.stringify(playlistResponse.data));
 
 		await removeTracks(playlistResponse, bearer);
 

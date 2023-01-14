@@ -40,3 +40,9 @@ _Note: You can follow the guides in our [wiki](https://github.com/McMumf/Music-C
 
 - [Retrieving Discord Tokens](https://github.com/McMumf/Music-Club-Bot/wiki/Setting-up-the-Discord-App)
 - [Retrieving Spotify Tokens](https://github.com/McMumf/Music-Club-Bot/wiki/Setting-up-the-Spotify-App)
+
+## Running for Dev
+
+1. Open two terminal sessions
+2. Start the authServer: `npm run auth`
+3. Start the bot: `npm run bot`
